@@ -333,6 +333,14 @@ The UI listens on `127.0.0.1` by default. To reach it from another machine (or f
 ARTEX runs inside WSL), set `ARTEX_BIND_ADDR=0.0.0.0` in `.env` (the setup token still protects the
 first-run claim), or keep loopback and use a reverse proxy or SSH tunnel.
 
+To publish on other host ports, set `ARTEX_PORT` (web UI, default `8787`) and `ARTEX_PROXY_PORT`
+(traffic recording proxy, default `8788`) in `.env`, or pass them for a single run:
+
+```bash
+ARTEX_BIND_ADDR=0.0.0.0 ARTEX_PORT=9000 docker compose up -d
+# → http://<host>:9000
+```
+
 ### Option 2: Docker (Compose checkout build or prebuilt GHCR image)
 
 Build from a checkout with Docker Compose:
@@ -562,7 +570,8 @@ The per-worker average is not restored (usage rows have no run boundary), so the
 from the defaults until a worker finishes in this process.
 
 **Common flags**: `./start.sh -addr :8787 -proxy :8788` (`-addr` frontend/API, `-proxy` traffic
-recording proxy).
+recording proxy). Both take `host:port`, so one command sets the address and the port:
+`./start.sh -addr 0.0.0.0:9000 -proxy 127.0.0.1:9001`.
 
 ### External PostgreSQL
 
@@ -611,8 +620,8 @@ services:
       # ARTEX_PG_DSN: ${ARTEX_PG_DSN}
       ARTEX_JWT_KEY_DIR: /app/keys
     ports:
-      - "${ARTEX_BIND_ADDR:-127.0.0.1}:8787:8787"
-      - "127.0.0.1:8788:8788"
+      - "${ARTEX_BIND_ADDR:-127.0.0.1}:${ARTEX_PORT:-8787}:8787"
+      - "127.0.0.1:${ARTEX_PROXY_PORT:-8788}:8788"
     volumes:
       - ./data:/app/data
       - ./keys:/app/keys

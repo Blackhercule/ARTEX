@@ -72,8 +72,8 @@ services:
       ARTEX_INTENT_BUDGET_TOKENS: ${ARTEX_INTENT_BUDGET_TOKENS:-}
       ARTEX_INTENT_BUDGET_TURNS: ${ARTEX_INTENT_BUDGET_TURNS:-}
     ports:
-      - "${ARTEX_BIND_ADDR:-127.0.0.1}:8787:8787"
-      - "127.0.0.1:8788:8788"
+      - "${ARTEX_BIND_ADDR:-127.0.0.1}:${ARTEX_PORT:-8787}:8787"
+      - "127.0.0.1:${ARTEX_PROXY_PORT:-8788}:8788"
     volumes:
       - ./data:/app/data
       - ./keys:/app/keys
